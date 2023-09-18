@@ -25,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Response::macro('success', function ($message = 'Success', $data = [], $status = 200) {
+
             return Response::json([
                 'status' => 'success',
                 'message' => $message,

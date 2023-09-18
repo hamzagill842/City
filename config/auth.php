@@ -13,10 +13,6 @@ return [
     |
     */
 
-    'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
-    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -35,12 +31,7 @@ return [
     |
     */
 
-    'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
-    ],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -85,6 +76,17 @@ return [
     | they have less time to be guessed. You may change this as needed.
     |
     */
+    'defaults' => [
+        'guard' => 'api',
+        'passwords' => 'users',
+    ],
+
+    'guards' => [
+        'api' => [
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ],
+    ],
 
     'passwords' => [
         'users' => [
@@ -107,5 +109,17 @@ return [
     */
 
     'password_timeout' => 10800,
+
+    'mailers' => [
+        'smtp' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOST', 'smtp.mailtrap.io'),
+            'port' => env('MAIL_PORT', 587),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'username' => env('MAIL_USERNAME'),
+            'password' => env('MAIL_PASSWORD'),
+            'timeout' => null,
+        ],
+    ],
 
 ];
