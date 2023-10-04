@@ -28,7 +28,7 @@ class SignupRequest extends BaseRequest
     {
         return [
             'name' => 'required|string',
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email:rfc,dns|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'date_of_birth' => [
                 'required',

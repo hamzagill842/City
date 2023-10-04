@@ -16,3 +16,28 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('send-mail', function () {
+
+    try {
+        $details = [
+
+            'title' => 'Mail from ItSolutionStuff.com',
+
+            'body' => 'This is for testing email using smtp'
+
+        ];
+
+
+
+        \Mail::to('hamzagill415@gmail.com')->send(new \App\Mail\MyTestMail($details));
+        dd("Email is Sent.");
+
+    } catch ( Exception $exception) {
+        dd($exception);
+    }
+
+
+
+
+
+});

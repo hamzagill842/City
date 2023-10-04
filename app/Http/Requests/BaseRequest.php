@@ -4,6 +4,7 @@
 
 namespace App\Http\Requests;
 
+
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -18,7 +19,7 @@ class BaseRequest extends FormRequest
                 'status' => 'failure',
                 'message' => 'Validation errors',
                 'errors' => $validator->errors(),
-            ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY)
+            ], 200)
         );
     }
 }

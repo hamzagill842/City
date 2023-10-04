@@ -34,12 +34,12 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Failure Response Macro
-        Response::macro('failure', function ($message = 'Failure', $errors = [], $status = 400) {
+        Response::macro('failure', function ($message = 'Failure', $errors = [], $status = 200) {
             return Response::json([
                 'status' => 'failure',
                 'message' => $message,
                 'errors' => $errors,
-            ], $status);
+            ], 200);
         });
     }
 }
