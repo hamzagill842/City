@@ -16,7 +16,7 @@ class ProvinceController extends Controller
         $nameFilter = request('search');
 
 // Start with all provinces and apply the name filter if provided
-        $query = Province::query()->select('id','name','city','destination','location','description');
+        $query = Province::query()->select('id','name','city','image','destination','location','description');
 
         if ($nameFilter) {
             $query->where('name', 'like', '%' . $nameFilter . '%')
@@ -43,18 +43,21 @@ class ProvinceController extends Controller
     public function store(StoreProvinceRequest $request)
     {
         if ($request->hasFile('image')) {
-            // Store the uploaded file in the public storage disk
-            $imagePath = $request->file('image')->store('uploads', 'public');
+            // Store the uploaded file in the public/uploads directory with a custom name
+            $fileName = time() .'.'. $request->file('image')->getClientOriginalExtension();
+
+            $imagePath = $request->file('image')->move(public_path('uploads'), $fileName);
         } else {
-            $imagePath = null;
+            $fileName = null;
         }
+
         $province = Province::create([
             'name' => $request->input('name'),
             'city' => $request->input('city'),
             'destination' => $request->input('destination'),
             'location' => $request->input('location'),
             'description' => $request->input('description'),
-            'image' => $imagePath, // Save the image path in the 'image' column
+            'image' => $fileName, // Save the image path in the 'image' column
         ]);
         return Response::success('Operation succeeded', $province,200);
     }

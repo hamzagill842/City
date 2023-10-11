@@ -31,10 +31,10 @@ Route::middleware('jwt')->group(function () {
     Route::get('user', [\App\Http\Controllers\UserController::class,'getUser']);
     Route::post('user', [\App\Http\Controllers\UserController::class,'updateUser']);
     Route::post('provinces', [\App\Http\Controllers\ProvinceController::class,'store']);
-    Route::get('provinces', [\App\Http\Controllers\ProvinceController::class,'index']);
+//    Route::get('provinces', [\App\Http\Controllers\ProvinceController::class,'index']);
     Route::get('cities', [\App\Http\Controllers\ProvinceController::class,'cities']);
     Route::post('logout', [\App\Http\Controllers\Auth\AuthController::class,'logout']);
 });
 Route::post('verify-otp', [\App\Http\Controllers\OtpVerificationController::class,'verifyOtp']);
 Route::post('resend-otp', [\App\Http\Controllers\OtpVerificationController::class,'resendOtp']);
-
+Route::get('provinces', [\App\Http\Controllers\ProvinceController::class,'index']);

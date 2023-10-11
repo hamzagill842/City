@@ -27,4 +27,22 @@ class Province extends Model
             }
         });
     }
+
+    /**
+     * Accessor method to get the full image path.
+     *
+     * @param  string  $value
+     * @return string|null
+     */
+    public function getImageAttribute($value)
+    {
+        if ($value) {
+            // If the image path is not null, prepend the base URL to generate the full URL.
+            // You can customize the base URL according to your application's configuration.
+            $baseUrl = config('app.url');
+            return $baseUrl . '/uploads/' . $value;
+        }
+
+        return null;
+    }
 }

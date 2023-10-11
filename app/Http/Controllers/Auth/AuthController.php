@@ -29,7 +29,7 @@ class AuthController extends Controller
                 'date_of_birth' => $request->date_of_birth,
                 'password' => bcrypt($request->password),
             ]);
-            Mail::to($user->email)->send(new OtpMail($otp));
+            Mail::to($user->email)->queue(new OtpMail($otp));
             DB::commit();
             $user['next'] = 'otp';
             return Response::success('Operation succeeded', $user, 200);
