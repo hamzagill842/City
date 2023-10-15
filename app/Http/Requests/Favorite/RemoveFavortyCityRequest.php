@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Favorite;
 
+use App\Http\Requests\BaseRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class VerifyOtp extends BaseRequest
+class RemoveFavortyCityRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +25,7 @@ class VerifyOtp extends BaseRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|exists:users',
-           'otp' => 'required',
+            'favorite_id' => 'required|exists:user_histories,id',
         ];
     }
 }

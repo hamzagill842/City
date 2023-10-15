@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProvinceController;
+use App\Http\Controllers\UserHistoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,5 +37,10 @@ Route::middleware('jwt')->group(function () {
     Route::post('provinces', [\App\Http\Controllers\ProvinceController::class,'store']);
     Route::get('provinces', [\App\Http\Controllers\ProvinceController::class,'index']);
     Route::get('cities', [\App\Http\Controllers\ProvinceController::class,'cities']);
+
+
+    Route::get('favorite-cities', [UserHistoryController::class, 'index']);
+    Route::post('/favorite-cities/add', [UserHistoryController::class, 'create']);
+    Route::post('favorite-cities/remove', [UserHistoryController::class, 'removeFavoriteCity']);
     Route::post('logout', [\App\Http\Controllers\Auth\AuthController::class,'logout']);
 });

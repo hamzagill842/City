@@ -27,4 +27,9 @@ class UserHistory extends Model
             }
         });
     }
+
+    public function city()
+    {
+        return $this->belongsTo(Province::class,'province_id','id');
+    }
 }
