@@ -36,7 +36,7 @@ class UserController extends Controller
         // Update the user's information
         $user->update([
             'name' => $request->input('name') ?? $user->name,
-            'email' => $request->input('email') ?? $user->email,
+//            'email' => $request->input('email') ?? $user->email,
             'city' => $request->input('city') ?? $user->city,
             'date_of_birth' => $request->input('date_of_birth') ?? $user->date_of_birth,
             'bio' => $request->input('bio') ?? $user->bio ,
