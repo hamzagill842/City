@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\UpdatePasswordRequest;
 use App\Http\Requests\User\UpdateUserRequest;
+use App\Models\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use Laravel\Sanctum\PersonalAccessToken;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
@@ -40,5 +44,31 @@ class UserController extends Controller
         ]);
 
         return Response::success('Operation succeeded', $user,200);
+    }
+
+
+    public function updatePassword(UpdatePasswordRequest $request)
+    {
+        $user = auth()->user();
+
+        $user->update([
+            'password' => bcrypt($request->password),
+        ]);
+
+        $user->tokens->each(function (PersonalAccessToken $token) {
+            $token->delete();
+        });
+        $token = JWTAuth::fromUser($user);
+
+        return Response::success('OTP verified successfully', [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'otp_verify' =>  (bool)$user->otp_verify,
+            ],
+            'access_token' => $token
+        ],200);
+
     }
 }
