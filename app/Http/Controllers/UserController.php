@@ -21,6 +21,7 @@ class UserController extends Controller
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
+            'bio' => $user->bio,
             'otp_verify' => (bool)$user->otp_verify,
             'city' => $user->city,
             'date_of_birth' => $user->date_of_birth,

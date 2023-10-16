@@ -20,23 +20,26 @@ class OtpVerificationController extends Controller
 {
     public function verifyOtp(VerifyOtp $request)
     {
-        $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
+        $user = User::where('email', $request->email)->first();
+        $resetPassword = PasswordReset::where('email', $request->email)->first();
+
+        if (!$resetPassword) {
+            return response()->json(['error' => 'not found'], 404);
         }
 
         // Verify the OTP
-        if ($request->has('otp') && $request->otp == $user->otp) {
+        if ($request->has('otp') && $request->otp == $resetPassword->token) {
             $token = JWTAuth::fromUser($user);
             $user->otp_verify = true;
-            $user->otp = null;
             $user->save();
+            PasswordReset::where('email', $request->email)->delete();
             return Response::success('OTP verified successfully', [
                 'user' => [
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
+                    'bio' => $user->bio,
                     'otp_verify' =>  (bool)$user->otp_verify,
                 ],
                 'access_token' => $token
@@ -54,10 +57,13 @@ class OtpVerificationController extends Controller
         try {
 
             $otp = Str::random(6);
-            $user = User::where('email', $request->email)->first();
-            $user->otp = $otp;
-            $user->save();
-            Mail::to($user->email)->send(new OtpMail($otp));
+
+            $condition = ['email' => $request->email];
+            $values = ['token' => $otp];
+
+            PasswordReset::updateOrInsert($condition, $values);
+
+            Mail::to($request->email)->send(new OtpMail($otp));
            return Response::success('OTP resend successfully', [
                 'message' => 'otp has been sent on your email, please check your email.'
             ], 200);
@@ -67,7 +73,6 @@ class OtpVerificationController extends Controller
             ], 200);
         }
     }
-
 
     public function forgetPassword(ResendOtp $request)
     {
@@ -111,6 +116,7 @@ class OtpVerificationController extends Controller
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
+                    'bio' => $user->bio,
                     'otp_verify' =>  (bool)$user->otp_verify,
                 ],
                 'access_token' => $token

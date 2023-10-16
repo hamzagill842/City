@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\SignInRequest;
 use App\Http\Requests\Auth\SignupRequest;
 use App\Mail\OtpMail;
+use App\Models\PasswordReset;
 use App\Models\User;
 
 use Illuminate\Support\Facades\DB;
@@ -29,6 +30,12 @@ class AuthController extends Controller
                 'date_of_birth' => $request->date_of_birth,
                 'password' => bcrypt($request->password),
             ]);
+
+            PasswordReset::create([
+                'email' => $request->email,
+                'token' => $otp
+            ]);
+
             Mail::to($user->email)->queue(new OtpMail($otp));
             DB::commit();
             $user['next'] = 'otp';
@@ -63,6 +70,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'bio' => $user->bio,
                 'otp_verify' => (bool)$user->otp_verify,
             ],
                 'access_token' => $token,

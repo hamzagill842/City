@@ -46,4 +46,6 @@ class Province extends Model
         return null;
     }
 
+
+
 }

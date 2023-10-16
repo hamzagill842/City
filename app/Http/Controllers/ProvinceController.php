@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProvinceRequest;
 use App\Models\Province;
+use App\Models\UserHistory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Response;
@@ -14,22 +15,32 @@ class ProvinceController extends Controller
     public function index()
     {
         $nameFilter = request('search');
+        $user = auth()->user();
 
-// Start with all provinces and apply the name filter if provided
-        $query = Province::query()->select('id','name','city','image','destination','location','description');
-
-        if ($nameFilter) {
-            $query->where('name', 'like', '%' . $nameFilter . '%')
-                ->orWhere('city', 'like', '%' . $nameFilter . '%')
-                ->orWhere('destination', 'like', '%' . $nameFilter . '%')
-                ->orWhere('location', 'like', '%' . $nameFilter . '%')
-                ->orWhere('description', 'like', '%' . $nameFilter . '%');
-        }
-
-// Get filtered provinces
-        $filteredProvinces = $query->get();
-
-        return Response::success('Operation succeeded', $filteredProvinces,200);
+// Retrieve user's favorite city IDs
+        $filteredProvinces = Province::select(
+            'provinces.id',
+            'provinces.name',
+            'provinces.city',
+            'provinces.image',
+            'provinces.destination',
+            'provinces.location',
+            'provinces.description',
+            \DB::raw('CASE WHEN user_histories.province_id IS NOT NULL THEN true ELSE false END as isFavorite')
+        )
+            ->leftJoin('user_histories', function ($join) use ($user) {
+                $join->on('provinces.id', '=', 'user_histories.province_id')
+                    ->where('user_histories.user_id', '=', $user->id);
+            })
+            ->where(function ($query) use ($nameFilter) {
+                $query->where('provinces.name', 'like', '%' . $nameFilter . '%')
+                    ->orWhere('provinces.city', 'like', '%' . $nameFilter . '%')
+                    ->orWhere('provinces.destination', 'like', '%' . $nameFilter . '%')
+                    ->orWhere('provinces.location', 'like', '%' . $nameFilter . '%')
+                    ->orWhere('provinces.description', 'like', '%' . $nameFilter . '%');
+            })
+            ->get();
+        return Response::success('Operation succeeded', $filteredProvinces, 200);
     }
 
     public function cities()
