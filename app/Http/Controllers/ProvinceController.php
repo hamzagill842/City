@@ -46,7 +46,7 @@ class ProvinceController extends Controller
     public function cities()
     {
 
-        $query = Province::select('city')->get()->toArray();
+        $query = Province::distinct()->pluck('name')->toArray();
 
         return Response::success('Operation succeeded', $query,200);
     }
